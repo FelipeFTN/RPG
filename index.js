@@ -23,6 +23,21 @@ const background = new Sprite({
     image: image
 });
 
+const keys = {
+    w: {
+        pressed: false
+    },
+    a: {
+        pressed: false
+    },
+    s: {
+        pressed: false
+    },
+    d: {
+        pressed: false
+    },
+};
+
 // Frame/Image Update Function
 function animate() {
     window.requestAnimationFrame(animate);
@@ -38,18 +53,36 @@ function animate() {
         playerImage.width / 4,
         playerImage.height,
     );
+
+    if (keys.w.pressed) background.position.y += 3;
+    if (keys.a.pressed) background.position.x += 3;
+    if (keys.s.pressed) background.position.y -= 3;
+    if (keys.d.pressed) background.position.x -= 3;
 }
 animate();
 
 // When key is down event
 window.addEventListener('keydown', (e) => {
     if (e.key == 'w') {
-        console.log('walk');
+        keys.w.pressed = true;
     } else if (e.key == 'a') {
-        console.log('walk');
+        keys.a.pressed = true;
     } else if (e.key == 's') {
-        console.log('walk');
+        keys.s.pressed = true;
     } else if (e.key == 'd') {
-        console.log('walk');
+        keys.d.pressed = true;
+    }
+});
+
+// When key is up event
+window.addEventListener('keyup', (e) => {
+    if (e.key == 'w') {
+        keys.w.pressed = false;
+    } else if (e.key == 'a') {
+        keys.a.pressed = false;
+    } else if (e.key == 's') {
+        keys.s.pressed = false;
+    } else if (e.key == 'd') {
+        keys.d.pressed = false;
     }
 });
