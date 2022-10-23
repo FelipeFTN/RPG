@@ -5,8 +5,21 @@ const c = canvas.getContext('2d');
 canvas.width = 1024;
 canvas.height = 576;
 
-c.fillStyle = 'white';
-c.fillRect(0, 0, canvas.width, canvas.height);
+// Mapping collisions
+for (let i = 0; i < collisions.length; i+=70) {
+    collisionsMap.push(collisions.slice(i, 70 + i));
+}
+
+collisionsMap.forEach((row, i) => {
+    row.forEach((symbol, j)=> {
+        if (symbol == 1025) {
+            boundaries.push(new Boundary({position: {
+                x: j * Boundary.width + offset.x,
+                y: i * Boundary.height + offset.y 
+            }}));
+        }
+    });
+});
 
 // Loading Images 
 const image = new Image();
@@ -17,31 +30,29 @@ playerImage.src = './images/playerDown.png';
 
 const background = new Sprite({
     position: {
-        x: -1072,
-        y: -710
+        x: offset.x,
+        y: offset.y 
     },
     image: image
 });
 
-const keys = {
-    w: {
-        pressed: false
-    },
-    a: {
-        pressed: false
-    },
-    s: {
-        pressed: false
-    },
-    d: {
-        pressed: false
-    },
-};
+const testBoundary = new Boundary({
+    position: {
+        x: 400,
+        y: 400
+    }
+});
+
+movables = [background, testBoundary];
 
 // Frame/Image Update Function
 function animate() {
     window.requestAnimationFrame(animate);
     background.draw();
+    // boundaries.forEach(boundary => {
+    //     boundary.draw();
+    // });
+    testBoundary.draw();
     c.drawImage(
         playerImage,
         0,
@@ -54,23 +65,48 @@ function animate() {
         playerImage.height,
     );
 
-    if (keys.w.pressed) background.position.y += 3;
-    if (keys.a.pressed) background.position.x += 3;
-    if (keys.s.pressed) background.position.y -= 3;
-    if (keys.d.pressed) background.position.x -= 3;
+    if (keys.w.pressed && lastKey === 'w') {
+        movables.forEach(movable => {
+            movable.position.y += 3;
+        });
+    }
+    else if (keys.a.pressed && lastKey === 'a') {
+        movables.forEach(movable => {
+            movable.position.x += 3;
+        });
+    }
+    else if (keys.s.pressed && lastKey === 's') {
+        movables.forEach(movable => {
+            movable.position.y -= 3;
+        });
+    }
+    else if (keys.d.pressed && lastKey === 'd') {
+        movables.forEach(movable => {
+            movable.position.x -= 3;
+        });
+    }
+    // if (keys.w.pressed) background.position.y += 3;
+    // if (keys.a.pressed) background.position.x += 3;
+    // if (keys.s.pressed) background.position.y -= 3;
+    // if (keys.d.pressed) background.position.x -= 3;
 }
 animate();
 
+let lastKey = '';
 // When key is down event
 window.addEventListener('keydown', (e) => {
     if (e.key == 'w') {
         keys.w.pressed = true;
+        lastKey = 'w';
     } else if (e.key == 'a') {
         keys.a.pressed = true;
+        lastKey = 'a';
     } else if (e.key == 's') {
         keys.s.pressed = true;
+        lastKey = 's';
     } else if (e.key == 'd') {
         keys.d.pressed = true;
+        lastKey = 'd';
     }
 });
 
